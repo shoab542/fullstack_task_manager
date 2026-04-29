@@ -17,7 +17,7 @@ exports.getTasks = async (req, res, next) => {
     let values = [req.user.id];
 
     if (search) {
-      baseSql += " WHERE title LIKE ?";
+      baseSql += " AND title LIKE ?";
       values.push(`%${search}%`);
     }
 
@@ -134,17 +134,21 @@ exports.updateTask = async (req, res, next) => {
 exports.deleteTask = async (req, res, next) => {
   try {
     const { id } = req.params;
-
-    const [result] = await db.query(
-      "DELETE FROM tasks WHERE id = ? AND user_id = ?",
-      [id, req.user.id]
-    );
-
-    if (result.affectedRows === 0) {
-      return next(new Error("Task not found"));
+    console.log(req.user.role)
+    if(req.user.role === "admin"){
+      const [result] = await db.query(
+        "DELETE FROM tasks WHERE id = ? AND user_id = ?",
+        [id, req.user.id]
+      );
+  
+      if (result.affectedRows === 0) {
+        return next(new Error("Task not found"));
+      }
+      successResponse(res, null, "Task deleted");
+    }else{
+     return next(new Error("You have not permission to delete this task."))
     }
 
-    successResponse(res, null, "Task deleted");
   } catch (err) {
     next(err);
   }
