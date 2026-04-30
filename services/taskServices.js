@@ -46,7 +46,6 @@ exports.getTaskByIdServices = async (id, userId, next) => {
   if (rows.length === 0) {
     return next(new Error("Task not found with given id"));
   }
-  console.log("aaaa",rows)
   return{
     rows
   }
