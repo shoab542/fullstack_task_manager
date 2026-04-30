@@ -1,5 +1,6 @@
 const db = require("../db");
 const { successResponse } = require("../utils/response");
+const { getTaskServices , createTaskService, getTaskByIdServices } = require("../services/taskServices");
 
 /* =========================
    GET TASKS (pagination + search + sort)
@@ -13,27 +14,13 @@ exports.getTasks = async (req, res, next) => {
 
     const sortOrder = req.query.sort?.toLowerCase() === "desc" ? "DESC" : "ASC";
 
-    let baseSql = "FROM tasks WHERE user_id = ?";
-    let values = [req.user.id];
-
-    if (search) {
-      baseSql += " AND title LIKE ?";
-      values.push(`%${search}%`);
-    }
-
-    // Data query
-    const dataSql = `
-  SELECT * ${baseSql}
-  ORDER BY id ${sortOrder}
-  LIMIT ? OFFSET ?
-   `;
-
-    const [rows] = await db.query(dataSql, [...values, limit, offset]);
-
-    const countSql = `SELECT COUNT(*) as total ${baseSql}`;
-    const [countResult] = await db.query(countSql, values);
-
-    const total = countResult[0].total;
+    const { rows, total } = await getTaskServices(
+      req.user.id,
+      search,
+      limit,
+      offset,
+      sortOrder
+    );
 
     res.json({
       success: true,
@@ -61,15 +48,7 @@ exports.createTask = async (req, res, next) => {
     if (!title || title.trim().length === 0) {
       return next(new Error("Title is required"));
     }
-
-    const [result] = await db.query(
-      "INSERT INTO tasks(title,user_id) VALUES(?,?)",
-      [title, userId]
-    );
-
-    const [rows] = await db.query("SELECT * FROM tasks WHERE id = ? AND user_id = ?", [
-      result.insertId, userId
-    ]);
+    const {rows}= await createTaskService(title, userId);
 
     successResponse(res, rows[0], "Task created");
   } catch (err) {
@@ -83,21 +62,13 @@ exports.createTask = async (req, res, next) => {
 exports.getTaskById = async (req, res, next) => {
   try {
     const { id } = req.params;
-
-    const [rows] = await db.query(
-      "SELECT * FROM tasks WHERE id = ? AND user_id = ?",
-      [id, req.user.id]
-    );
-
-    if (rows.length === 0) {
-      return next(new Error("Task not found with given id"));
-    }
-
-    successResponse(res, rows[0], "Task fetched successfully");
+    
+    const {rows}= await getTaskByIdServices(id, req.user.id, next);
+    successResponse(res, rows, "Task fetched successfully");
   } catch (err) {
     next(err);
   }
-};
+}
 
 /* =========================
    UPDATE TASK
@@ -134,7 +105,6 @@ exports.updateTask = async (req, res, next) => {
 exports.deleteTask = async (req, res, next) => {
   try {
     const { id } = req.params;
-    console.log(req.user.role)
     if(req.user.role === "admin"){
       const [result] = await db.query(
         "DELETE FROM tasks WHERE id = ? AND user_id = ?",
