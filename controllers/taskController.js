@@ -1,9 +1,14 @@
-const db = require("../db");
 const { successResponse } = require("../utils/response");
-const { getTaskServices , createTaskService, getTaskByIdServices } = require("../services/taskServices");
+const {
+  getTaskServices,
+  createTaskService,
+  getTaskByIdServices,
+  updateTaskServices,
+  deleteTaskServices,
+} = require("../services/taskServices");
 
 /* =========================
-   GET TASKS (pagination + search + sort)
+   GET TASKS
 ========================= */
 exports.getTasks = async (req, res, next) => {
   try {
@@ -12,10 +17,12 @@ exports.getTasks = async (req, res, next) => {
     const search = req.query.search;
     const offset = (page - 1) * limit;
 
-    const sortOrder = req.query.sort?.toLowerCase() === "desc" ? "DESC" : "ASC";
+    const sortOrder =
+      req.query.sort?.toLowerCase() === "desc" ? "DESC" : "ASC";
 
     const { rows, total } = await getTaskServices(
       req.user.id,
+      req.user.role,
       search,
       limit,
       offset,
@@ -33,7 +40,7 @@ exports.getTasks = async (req, res, next) => {
       },
     });
   } catch (err) {
-    next(err);
+    next(err); // ✅ IMPORTANT
   }
 };
 
@@ -43,14 +50,10 @@ exports.getTasks = async (req, res, next) => {
 exports.createTask = async (req, res, next) => {
   try {
     const { title } = req.body;
-    const userId = req.user.id;
 
-    if (!title || title.trim().length === 0) {
-      return next(new Error("Title is required"));
-    }
-    const {rows}= await createTaskService(title, userId);
+    const row = await createTaskService(title, req.user.id);
 
-    successResponse(res, rows[0], "Task created");
+    successResponse(res, row, "Task created");
   } catch (err) {
     next(err);
   }
@@ -61,39 +64,33 @@ exports.createTask = async (req, res, next) => {
 ========================= */
 exports.getTaskById = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    
-    const {rows}= await getTaskByIdServices(id, req.user.id, next);
-    successResponse(res, rows, "Task fetched successfully");
+    const row = await getTaskByIdServices(
+      req.params.id,
+      req.user.id,
+      req.user.role
+    );
+
+    successResponse(res, row, "Task fetched successfully");
   } catch (err) {
     next(err);
   }
-}
+};
 
 /* =========================
    UPDATE TASK
 ========================= */
 exports.updateTask = async (req, res, next) => {
   try {
-    const { id } = req.params;
     const { title } = req.body;
 
-    if (!title || title.trim().length === 0) {
-      return next(new Error("Title is required"));
-    }
-
-    const [result] = await db.query(
-      "UPDATE tasks SET title = ? WHERE id = ? AND user_id = ?",
-      [title, id, req.user.id]
+    const row = await updateTaskServices(
+      title,
+      req.params.id,
+      req.user.id,
+      req.user.role
     );
 
-    if (result.affectedRows === 0) {
-      return next(new Error("Invalid task id"));
-    }
-
-    const [updated] = await db.query("SELECT * FROM tasks WHERE id = ? AND user_id = ?", [id, req.user.id]);
-
-    successResponse(res, updated[0], "Task updated");
+    successResponse(res, row, "Task updated");
   } catch (err) {
     next(err);
   }
@@ -104,21 +101,13 @@ exports.updateTask = async (req, res, next) => {
 ========================= */
 exports.deleteTask = async (req, res, next) => {
   try {
-    const { id } = req.params;
-    if(req.user.role === "admin"){
-      const [result] = await db.query(
-        "DELETE FROM tasks WHERE id = ? AND user_id = ?",
-        [id, req.user.id]
-      );
-  
-      if (result.affectedRows === 0) {
-        return next(new Error("Task not found"));
-      }
-      successResponse(res, null, "Task deleted");
-    }else{
-     return next(new Error("You have not permission to delete this task."))
-    }
+    await deleteTaskServices(
+      req.params.id,
+      req.user.id,
+      req.user.role
+    );
 
+    successResponse(res, null, "Task deleted");
   } catch (err) {
     next(err);
   }
