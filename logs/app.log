@@ -1,0 +1,10 @@
+2026-05-05T10:27:19.834Z - User logged in: ID=1, Email=shoab542@gmail.com
+2026-05-05T10:27:19.839Z - jwt is not defined | POST /auth/login
+2026-05-05T10:27:55.257Z - User logged in: ID=1, Email=shoab542@gmail.com
+2026-05-05T10:36:03.647Z - User logged in: ID=1, Email=shoab542@gmail.com
+2026-05-05T10:41:06.667Z - Login failed: string
+2026-05-05T10:41:06.668Z - Invalid credentials | POST /auth/login
+2026-05-05T10:41:09.290Z - Login failed: string
+2026-05-05T10:41:09.292Z - Invalid credentials | POST /auth/login
+2026-05-05T10:41:09.857Z - Login failed: string
+2026-05-05T10:41:09.858Z - Invalid credentials | POST /auth/login

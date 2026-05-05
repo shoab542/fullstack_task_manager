@@ -16,14 +16,12 @@ const checkOwnership = async (req, res, next) => {
     const task = rows[0];
 
     if (req.user.role === "admin") {
-        console.log("hello");
       return next();
     }
    
     if (task.user_id !== userId) {
       throw new AppError("Forbidden: Not your task", 403);
     }
-    console.log("hi");
 
     next();
   } catch (err) {

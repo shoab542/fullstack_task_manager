@@ -1,30 +1,26 @@
 const jwt = require("jsonwebtoken");
+const AppError = require("../utils/AppError");
 
 const authMiddleware = (req, res, next) => {
-    try {
-      const authHeader = req.headers.authorization;
-      if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return res.status(401).json({
-          success: false,
-          message: "Token not found",
-        });
-      }
-  
-      const token = authHeader.split(" ")[1];
-  
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  
-      req.user = decoded;
-  
-      next();
-    } catch (err) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid or expired token",
-      });
+  try {
+    const authHeader = req.headers.authorization;
+
+    // ❌ No token
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return next(new AppError("Token not found", 401));
     }
-  };
+
+    const token = authHeader.split(" ")[1];
+
+    // ❌ Invalid token → will throw JsonWebTokenError
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    
+
+    next();
+  } catch (err) {
+    next(err); // goes to errorHandler
+  }
+};
 
 module.exports = authMiddleware;
-
-
