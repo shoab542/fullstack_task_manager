@@ -44,6 +44,7 @@ app.use("/auth", authRoutes);
 app.use(morgan("dev"));
 app.use("/tasks", taskRoutes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use("/uploads", express.static("uploads"));
 
 // ❌ Error handler
 app.use(errorHandler);

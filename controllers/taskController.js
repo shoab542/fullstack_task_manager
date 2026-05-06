@@ -81,11 +81,14 @@ exports.getTaskById = async (req, res, next) => {
    UPDATE TASK
 ========================= */
 exports.updateTask = async (req, res, next) => {
-
   try {
     const { title } = req.body;
 
-   const image = req.file ? req.file.filename : null;
+    if (!title || title.trim().length === 0) {
+      throw new Error("Title is required");
+    }
+
+    const image = req.file ? req.file.filename : null;
 
     const row = await updateTaskServices(
       title,
@@ -97,6 +100,16 @@ exports.updateTask = async (req, res, next) => {
 
     successResponse(res, row, "Task updated");
   } catch (err) {
+    // 🔥 IMPORTANT: cleanup uploaded file on error
+    if (req.file) {
+      const filePath = path.join(__dirname, "..", "uploads", req.file.filename);
+
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        console.log("❌ Deleted unused file:", filePath);
+      }
+    }
+
     next(err);
   }
 };
