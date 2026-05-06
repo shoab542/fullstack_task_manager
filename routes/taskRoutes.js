@@ -11,6 +11,8 @@ const {
   getTaskById
 } = require('../controllers/taskController');
 const checkOwnership = require('../middleware/ownershipMiddleware');
+const upload = require("../middleware/uploadMiddleware");
+
 
 /**
  * @swagger
@@ -86,7 +88,7 @@ router.get('/:id', authMiddleware, checkOwnership, getTaskById);
  *       200:
  *         description: Task created successfully
  */
-router.post('/', authMiddleware, validate(createTaskSchema), createTask);
+router.post('/', authMiddleware,upload.single("image"), validate(createTaskSchema), createTask);
 
 /**
  * @swagger
@@ -115,7 +117,7 @@ router.post('/', authMiddleware, validate(createTaskSchema), createTask);
  *       200:
  *         description: Task updated successfully
  */
-router.put('/:id', authMiddleware, validate(updateTaskSchema), checkOwnership, updateTask);
+router.put('/:id', authMiddleware,upload.single("image"), validate(updateTaskSchema), checkOwnership, updateTask);
 
 /**
  * @swagger

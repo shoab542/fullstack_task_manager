@@ -8,3 +8,22 @@
 2026-05-05T10:41:09.292Z - Invalid credentials | POST /auth/login
 2026-05-05T10:41:09.857Z - Login failed: string
 2026-05-05T10:41:09.858Z - Invalid credentials | POST /auth/login
+2026-05-06T06:26:44.725Z - Task not Found | DELETE /tasks/30
+2026-05-06T06:37:17.250Z - Only image files allowed | POST /tasks
+2026-05-06T07:03:13.100Z - Cannot destructure property 'title' of 'req.body' as it is undefined. | PUT /tasks/34
+2026-05-06T07:03:43.664Z - Cannot destructure property 'title' of 'req.body' as it is undefined. | PUT /tasks/34
+2026-05-06T07:03:47.158Z - Cannot destructure property 'title' of 'req.body' as it is undefined. | PUT /tasks/34
+2026-05-06T07:03:55.740Z - Cannot destructure property 'title' of 'req.body' as it is undefined. | PUT /tasks/34
+2026-05-06T07:06:03.183Z - Cannot destructure property 'title' of 'req.body' as it is undefined. | PUT /tasks/34
+2026-05-06T07:06:13.807Z - Cannot destructure property 'title' of 'req.body' as it is undefined. | PUT /tasks/34
+2026-05-06T07:07:46.372Z - Cannot destructure property 'title' of 'req.body' as it is undefined. | PUT /tasks/34
+2026-05-06T07:08:24.593Z - Cannot destructure property 'title' of 'req.body' as it is undefined. | PUT /tasks/34
+2026-05-06T07:08:39.631Z - Cannot destructure property 'title' of 'req.body' as it is undefined. | PUT /tasks/34
+2026-05-06T07:08:51.027Z - Cannot destructure property 'title' of 'req.body' as it is undefined. | PUT /tasks/34
+2026-05-06T07:09:06.981Z - Cannot destructure property 'title' of 'req.body' as it is undefined. | PUT /tasks/34
+2026-05-06T07:11:01.430Z - Cannot destructure property 'title' of 'req.body' as it is undefined. | PUT /tasks/34
+2026-05-06T07:15:42.088Z - Task not Found | PUT /tasks/90
+2026-05-06T07:15:58.698Z - Task not Found | PUT /tasks/90
+2026-05-06T07:21:27.737Z - Task not Found | PUT /tasks/90
+2026-05-06T07:21:54.244Z - Task not Found | PUT /tasks/90
+2026-05-06T07:27:11.288Z - Task not Found | PUT /tasks/90

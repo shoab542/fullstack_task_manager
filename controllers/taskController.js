@@ -50,8 +50,9 @@ exports.getTasks = async (req, res, next) => {
 exports.createTask = async (req, res, next) => {
   try {
     const { title } = req.body;
+    const image = req.file ? req.file.filename : null;
 
-    const row = await createTaskService(title, req.user.id);
+    const row = await createTaskService(title, req.user.id, image);
 
     successResponse(res, row, "Task created");
   } catch (err) {
@@ -80,14 +81,18 @@ exports.getTaskById = async (req, res, next) => {
    UPDATE TASK
 ========================= */
 exports.updateTask = async (req, res, next) => {
+
   try {
     const { title } = req.body;
+
+   const image = req.file ? req.file.filename : null;
 
     const row = await updateTaskServices(
       title,
       req.params.id,
       req.user.id,
-      req.user.role
+      req.user.role,
+      image
     );
 
     successResponse(res, row, "Task updated");

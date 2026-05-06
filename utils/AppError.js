@@ -2,8 +2,8 @@ class AppError extends Error {
     constructor(message, statusCode) {
       super(message);
   
-      this.statusCode = statusCode; // ✅ number
-      this.status = statusCode >= 400 && statusCode < 500 ? "fail" : "error"; // ✅ string
+      this.statusCode = statusCode; 
+      this.status = statusCode >= 400 && statusCode < 500 ? "fail" : "error"; 
   
       this.isOperational = true;
   
