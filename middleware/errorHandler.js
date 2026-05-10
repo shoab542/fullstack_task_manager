@@ -13,31 +13,39 @@ const errorHandler = (err, req, res, next) => {
 
   let error = err;
 
-  // ✅ Ensure it's AppError
-  if (!(error instanceof AppError)) {
-    error = new AppError(err.message || "Something went wrong", 500);
+  // 🔐 JWT errors
+  if (err.name === "JsonWebTokenError") {
+    error = handleJWTError();
   }
 
-  // 🔐 JWT errors
-  if (err.name === "JsonWebTokenError") error = handleJWTError();
-  if (err.name === "TokenExpiredError") error = handleJWTExpiredError();
+  if (err.name === "TokenExpiredError") {
+    error = handleJWTExpiredError();
+  }
 
-  // 🗄 MySQL errors
+  // 🗄 MySQL duplicate error
   if (err.code === "ER_DUP_ENTRY") {
     error = new AppError("Duplicate field value", 400);
   }
 
-  // 🚀 Dev vs Production response
+  // ✅ Convert unknown errors to AppError
+  if (!(error instanceof AppError)) {
+    error = new AppError(
+      error.message || "Something went wrong",
+      error.statusCode || 500
+    );
+  }
+
+  // 🚀 Development response
   if (process.env.NODE_ENV === "development") {
     return res.status(error.statusCode).json({
       success: false,
       status: error.status,
       message: error.message,
-      stack: err.stack, // 👈 helpful in dev
+      stack: err.stack,
     });
   }
 
-  // 🔒 Production (clean response)
+  // 🔒 Production response
   res.status(error.statusCode).json({
     success: false,
     status: error.status,

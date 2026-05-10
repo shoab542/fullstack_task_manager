@@ -50,7 +50,7 @@ exports.getTasks = async (req, res, next) => {
 exports.createTask = async (req, res, next) => {
   try {
     const { title } = req.body;
-    const image = req.file ? req.file.filename : null;
+    const image = req.file?.path || null;
 
     const row = await createTaskService(title, req.user.id, image);
 
@@ -88,7 +88,7 @@ exports.updateTask = async (req, res, next) => {
       throw new Error("Title is required");
     }
 
-    const image = req.file ? req.file.filename : null;
+    const image = req.file?.path || null;
 
     const row = await updateTaskServices(
       title,
@@ -102,7 +102,7 @@ exports.updateTask = async (req, res, next) => {
   } catch (err) {
     // 🔥 IMPORTANT: cleanup uploaded file on error
     if (req.file) {
-      const filePath = path.join(__dirname, "..", "uploads", req.file.filename);
+      const filePath = path.join(__dirname, "..", "uploads", req.file?.path);
 
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
