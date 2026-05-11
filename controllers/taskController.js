@@ -11,6 +11,7 @@ const {
    GET TASKS
 ========================= */
 exports.getTasks = async (req, res, next) => {
+
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
