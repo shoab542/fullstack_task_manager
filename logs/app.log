@@ -71,3 +71,29 @@
 2026-05-11T07:03:59.713Z - Forbidden: Not your task | DELETE /tasks/38
 2026-05-11T07:04:01.308Z - Forbidden: Not your task | DELETE /tasks/38
 2026-05-11T07:04:10.230Z - Forbidden: Not your task | DELETE /tasks/37
+2026-05-12T05:18:43.029Z - Forbidden: Not your task | DELETE /tasks/37
+2026-05-12T09:03:40.738Z - User logged in: ID=1, Email=shoab542@gmail.com
+2026-05-12T09:04:18.227Z - User logged in: ID=1, Email=shoab542@gmail.com
+2026-05-12T09:06:31.425Z - User logged in: ID=1, Email=shoab542@gmail.com
+2026-05-12T09:06:58.841Z - User logged in: ID=1, Email=shoab542@gmail.com
+2026-05-12T09:07:29.595Z - jwt expired | GET /tasks
+2026-05-12T09:07:35.254Z - jwt expired | GET /tasks
+2026-05-12T09:07:36.943Z - jwt expired | GET /tasks
+2026-05-12T09:07:49.976Z - User logged in: ID=1, Email=shoab542@gmail.com
+2026-05-12T09:08:19.212Z - jwt expired | GET /tasks
+2026-05-12T09:08:20.766Z - jwt expired | GET /tasks
+2026-05-12T09:08:21.734Z - jwt expired | GET /tasks
+2026-05-12T09:08:22.830Z - jwt expired | GET /tasks
+2026-05-12T09:13:36.425Z - jwt expired | POST /tasks
+2026-05-12T09:13:46.376Z - User logged in: ID=1, Email=shoab542@gmail.com
+2026-05-12T09:14:46.665Z - jwt expired | GET /tasks
+2026-05-12T09:14:48.663Z - jwt expired | GET /tasks
+2026-05-12T09:17:34.586Z - User logged in: ID=1, Email=shoab542@gmail.com
+2026-05-12T09:18:05.134Z - jwt expired | GET /tasks
+2026-05-12T09:19:07.771Z - jwt expired | GET /tasks
+2026-05-12T09:19:08.375Z - jwt expired | GET /tasks
+2026-05-12T09:20:12.348Z - User logged in: ID=1, Email=shoab542@gmail.com
+2026-05-12T09:20:45.017Z - jwt expired | POST /auth/refresh-token
+2026-05-12T09:21:29.173Z - User logged in: ID=1, Email=shoab542@gmail.com
+2026-05-13T05:36:13.079Z - Token has been logged out | GET /tasks
+2026-05-13T05:37:01.954Z - User logged in: ID=1, Email=shoab542@gmail.com

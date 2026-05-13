@@ -1,7 +1,9 @@
 const db = require("../db");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const log= require("../utils/logger")
+const log= require("../utils/logger");
+const blacklistedTokens = require('../utils/tokenBlacklist');
+const AppError = require("../utils/AppError");
 
 exports.register = async (req, res, next) => {
   try {
@@ -51,10 +53,69 @@ exports.login = async (req, res, next) => {
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
-
-    res.json({ success: true, token });
+    const refreshToken = jwt.sign(
+      {
+        id: user.id,
+      },
+      process.env.JWT_REFRESH_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+    res.json({ success: true, token, refreshToken });
 
   } catch (err) {
     next(err);
   }
 };
+
+exports.refreshToken = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      throw new AppError("Refresh token required", 401);
+    }
+
+    const decoded = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET
+    );
+
+    const newAccessToken = jwt.sign(
+      {
+        id: decoded.id,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "15m",
+      }
+    );
+
+    res.json({
+      success: true,
+      accessToken: newAccessToken,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+exports.logout = async (req, res , next)=>{
+  try{
+    const authHeader = req.headers.authorization;
+    if(!authHeader || !authHeader.startsWith("Bearer ")){
+      throw new AppError("Token not found", 401);
+    }
+    const token = authHeader.split(" ")[1];
+    blacklistedTokens.push(token);
+
+    res.json({
+      success: true,
+      message: "Logged out Successfully"
+    })
+  }catch(err){
+    next(err)
+  }
+}

@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const AppError = require("../utils/AppError");
+const blacklistedTokens= require('../utils/tokenBlacklist')
 
 const authMiddleware = (req, res, next) => {
   try {
@@ -12,6 +13,10 @@ const authMiddleware = (req, res, next) => {
 
     const token = authHeader.split(" ")[1];
 
+    if(blacklistedTokens.includes(token)){
+      throw new AppError("Token has been logged out", 401);
+    }
+
     // ❌ Invalid token → will throw JsonWebTokenError
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
@@ -19,7 +24,7 @@ const authMiddleware = (req, res, next) => {
 
     next();
   } catch (err) {
-    next(err); // goes to errorHandler
+    next(err); 
   }
 };
 
